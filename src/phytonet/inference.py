@@ -14,13 +14,26 @@ from .transforms import get_val_transform
 def predict_image(
     image_path: str,
     model_path: str,
-    class_names: List[str],
-    num_classes: int = 40,
+    class_names: List[str] | None = None,
+    num_classes: int | None = None,
     image_size: int = 224,
 ) -> tuple:
     """Predict class for a single image."""
 
-    # Load model
+    # Load model and get class names from it if not provided
+    if class_names is None or num_classes is None:
+        # First load to get metadata
+        checkpoint = torch.load(model_path, map_location="cpu")
+        if isinstance(checkpoint, dict) and "class_names" in checkpoint:
+            class_names = checkpoint["class_names"]
+            num_classes = checkpoint["num_classes"]
+        else:
+            raise ValueError(
+                "Class names not found in model file and not provided as parameter"
+            )
+
+    # Type assertion since we know they're not None after the check above
+    assert class_names is not None and num_classes is not None
     classifier = PhytoplanktonClassifier(num_classes=num_classes)
     classifier.load_model(model_path)
 
@@ -40,14 +53,27 @@ def predict_image(
 def batch_predict(
     image_dir: str,
     model_path: str,
-    class_names: List[str],
+    class_names: List[str] | None = None,
+    num_classes: int | None = None,
     output_file: str = "predictions.parquet",
-    num_classes: int = 40,
     image_size: int = 224,
 ) -> List[tuple]:
     """Predict classes for all images in a directory and save to Parquet."""
 
-    # Load model
+    # Load model and get class names from it if not provided
+    if class_names is None or num_classes is None:
+        # First load to get metadata
+        checkpoint = torch.load(model_path, map_location="cpu")
+        if isinstance(checkpoint, dict) and "class_names" in checkpoint:
+            class_names = checkpoint["class_names"]
+            num_classes = checkpoint["num_classes"]
+        else:
+            raise ValueError(
+                "Class names not found in model file and not provided as parameter"
+            )
+
+    # Type assertion since we know they're not None after the check above
+    assert class_names is not None and num_classes is not None
     classifier = PhytoplanktonClassifier(num_classes=num_classes)
     classifier.load_model(model_path)
 
