@@ -26,10 +26,12 @@ MANIFEST
 *.pt
 *.pth
 
-# Data
-*.png
-*.jpg
-*.jpeg
+# Data files (keep directory structure)
+data/**/*.png
+data/**/*.jpg
+data/**/*.jpeg
+data/**/*.zip
+!data/**/.gitkeep
 
 # IDEs
 .vscode/
