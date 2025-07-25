@@ -1,4 +1,10 @@
-# Ignore everything in this directory
-*
-# Except this file
-!.gitignore
+# Ignore data files but preserve directory structure
+*.png
+*.jpg
+*.jpeg
+*.zip
+
+# Keep directory structure
+!.gitkeep
+!*/
+!*/.gitkeep
