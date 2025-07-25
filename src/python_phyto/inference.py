@@ -3,6 +3,7 @@
 from pathlib import Path
 from typing import List, cast
 
+import pandas as pd
 import torch
 from PIL import Image
 
@@ -16,7 +17,7 @@ def predict_image(
     class_names: List[str],
     num_classes: int = 40,
     image_size: int = 224,
-) -> str:
+) -> tuple:
     """Predict class for a single image."""
 
     # Load model
@@ -30,20 +31,21 @@ def predict_image(
     input_tensor = tensor.unsqueeze(0)
 
     # Predict
-    pred_idx = classifier.predict(input_tensor)
+    pred_idx, pred_prob = classifier.predict(input_tensor)
     predicted_class = class_names[pred_idx]
 
-    return predicted_class
+    return predicted_class, pred_prob
 
 
 def batch_predict(
     image_dir: str,
     model_path: str,
     class_names: List[str],
+    output_file: str = "predictions.parquet",
     num_classes: int = 40,
     image_size: int = 224,
 ) -> List[tuple]:
-    """Predict classes for all images in a directory."""
+    """Predict classes for all images in a directory and save to Parquet."""
 
     # Load model
     classifier = PhytoplanktonClassifier(num_classes=num_classes)
@@ -66,9 +68,14 @@ def batch_predict(
         input_tensor = tensor.unsqueeze(0)
 
         # Predict
-        pred_idx = classifier.predict(input_tensor)
+        pred_idx, pred_prob = classifier.predict(input_tensor)
         predicted_class = class_names[pred_idx]
 
-        results.append((str(image_path), predicted_class))
+        results.append((str(image_path), predicted_class, pred_prob))
+
+    # Save results to Parquet and CSV
+    df = pd.DataFrame(results, columns=["image_path", "predicted_class", "probability"])  # type: ignore[arg-type]
+    df.to_parquet(output_file, index=False)
+    df.to_csv(output_file.replace(".parquet", ".csv"), index=False)
 
     return results

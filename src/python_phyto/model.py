@@ -71,6 +71,8 @@ class PhytoplanktonClassifier:
         self.model.eval()
         with torch.no_grad():
             output = self.model(input_tensor.to(self.device))
-            pred = output.argmax(dim=1).item()
-        return pred
+            probabilities = torch.softmax(output, dim=1)
+            pred_idx = output.argmax(dim=1).item()
+            pred_prob = probabilities[0][pred_idx].item()
+        return pred_idx, pred_prob
 
