@@ -54,6 +54,10 @@ def train_model(
     # Initialize model
     classifier = PhytoplanktonClassifier(num_classes=num_classes)
 
+    # Track best validation accuracy
+    best_val_acc = 0.0
+    best_epoch = 0
+
     # Training loop
     for epoch in range(num_epochs):
         # Train
@@ -64,18 +68,29 @@ def train_model(
         # Validate
         val_loss, val_correct = classifier.validate(val_loader)
 
+        # Calculate accuracies
+        train_acc = train_correct / len(train_ds)
+        val_acc = val_correct / len(val_ds)
+
         # Print metrics
         print(
             f"Epoch {epoch + 1}: "
             f"Train loss: {train_loss / len(train_ds):.4f}, "
-            f"acc: {train_correct / len(train_ds):.4f} | "
+            f"acc: {train_acc:.4f} | "
             f"Val loss: {val_loss / len(val_ds):.4f}, "
-            f"acc: {val_correct / len(val_ds):.4f}"
+            f"acc: {val_acc:.4f}"
         )
 
-    # Save model
-    classifier.save_model(model_save_path)
-    print(f"Model saved as {model_save_path}")
+        # Save best model
+        if val_acc > best_val_acc:
+            best_val_acc = val_acc
+            best_epoch = epoch + 1
+            classifier.save_model(model_save_path)
+            print(f"New best model saved! Val acc: {val_acc:.4f}")
+
+    print(
+        f"Training completed. Best model from epoch {best_epoch} with val acc: {best_val_acc:.4f}"
+    )
 
     return classifier, train_ds.classes
 
