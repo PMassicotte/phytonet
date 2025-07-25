@@ -27,7 +27,6 @@ MANIFEST
 *.pth
 
 # Data
-data/
 *.png
 *.jpg
 *.jpeg
