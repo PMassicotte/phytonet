@@ -629,6 +629,50 @@ wheels = [
 ]
 
 [[package]]
+name = "phytonet"
+version = "0.1.0"
+source = { editable = "." }
+dependencies = [
+    { name = "pandas" },
+    { name = "pathlib" },
+    { name = "pillow" },
+    { name = "pyarrow" },
+    { name = "timm" },
+    { name = "torch" },
+    { name = "torchvision" },
+    { name = "tqdm" },
+]
+
+[package.optional-dependencies]
+dev = [
+    { name = "black" },
+    { name = "flake8" },
+    { name = "isort" },
+    { name = "mypy" },
+    { name = "pre-commit" },
+    { name = "pytest" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "black", marker = "extra == 'dev'", specifier = ">=22.0.0" },
+    { name = "flake8", marker = "extra == 'dev'", specifier = ">=4.0.0" },
+    { name = "isort", marker = "extra == 'dev'", specifier = ">=5.10.0" },
+    { name = "mypy", marker = "extra == 'dev'", specifier = ">=1.0.0" },
+    { name = "pandas", specifier = ">=2.0.0" },
+    { name = "pathlib", specifier = ">=1.0.0" },
+    { name = "pillow", specifier = ">=9.0.0" },
+    { name = "pre-commit", marker = "extra == 'dev'", specifier = ">=2.20.0" },
+    { name = "pyarrow", specifier = ">=10.0.0" },
+    { name = "pytest", marker = "extra == 'dev'", specifier = ">=7.0.0" },
+    { name = "timm", specifier = ">=0.9.0" },
+    { name = "torch", specifier = ">=2.0.0" },
+    { name = "torchvision", specifier = ">=0.15.0" },
+    { name = "tqdm", specifier = ">=4.64.0" },
+]
+provides-extras = ["dev"]
+
+[[package]]
 name = "pillow"
 version = "11.3.0"
 source = { registry = "https://pypi.org/simple" }
@@ -836,50 +880,6 @@ sdist = { url = "https://files.pythonhosted.org/packages/66/c0/0c8b6ad9f17a802ee
 wheels = [
     { url = "https://files.pythonhosted.org/packages/ec/57/56b9bcc3c9c6a792fcbaf139543cee77261f3651ca9da0c93f5c1221264b/python_dateutil-2.9.0.post0-py2.py3-none-any.whl", hash = "sha256:a8b2bc7bffae282281c8140a97d3aa9c14da0b136dfe83f850eea9a5f7470427", size = 229892, upload-time = "2024-03-01T18:36:18.57Z" },
 ]
-
-[[package]]
-name = "python-phyto"
-version = "0.1.0"
-source = { editable = "." }
-dependencies = [
-    { name = "pandas" },
-    { name = "pathlib" },
-    { name = "pillow" },
-    { name = "pyarrow" },
-    { name = "timm" },
-    { name = "torch" },
-    { name = "torchvision" },
-    { name = "tqdm" },
-]
-
-[package.optional-dependencies]
-dev = [
-    { name = "black" },
-    { name = "flake8" },
-    { name = "isort" },
-    { name = "mypy" },
-    { name = "pre-commit" },
-    { name = "pytest" },
-]
-
-[package.metadata]
-requires-dist = [
-    { name = "black", marker = "extra == 'dev'", specifier = ">=22.0.0" },
-    { name = "flake8", marker = "extra == 'dev'", specifier = ">=4.0.0" },
-    { name = "isort", marker = "extra == 'dev'", specifier = ">=5.10.0" },
-    { name = "mypy", marker = "extra == 'dev'", specifier = ">=1.0.0" },
-    { name = "pandas", specifier = ">=2.0.0" },
-    { name = "pathlib", specifier = ">=1.0.0" },
-    { name = "pillow", specifier = ">=9.0.0" },
-    { name = "pre-commit", marker = "extra == 'dev'", specifier = ">=2.20.0" },
-    { name = "pyarrow", specifier = ">=10.0.0" },
-    { name = "pytest", marker = "extra == 'dev'", specifier = ">=7.0.0" },
-    { name = "timm", specifier = ">=0.9.0" },
-    { name = "torch", specifier = ">=2.0.0" },
-    { name = "torchvision", specifier = ">=0.15.0" },
-    { name = "tqdm", specifier = ">=4.64.0" },
-]
-provides-extras = ["dev"]
 
 [[package]]
 name = "pytz"

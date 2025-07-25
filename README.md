@@ -1,4 +1,4 @@
-# Python Phyto
+# PhytoNet
 
 A Python package for phytoplankton classification using deep learning.
 
@@ -23,7 +23,7 @@ uv sync --group dev
 Train a model on your phytoplankton dataset:
 
 ```bash
-uv run phyto-train --data-dir ./data/ --input-dir ./data/original/ --epochs 20
+uv run phytonet-train --data-dir ./data/ --input-dir ./data/original/ --epochs 20
 ```
 
 ### Prediction
@@ -32,10 +32,10 @@ Make predictions on new images:
 
 ```bash
 # Single image
-uv run phyto-predict image.png --model-path ifcb_model.pt
+uv run phytonet-predict image.png --model-path ifcb_model.pt
 
 # Batch prediction on directory
-uv run phyto-predict ./test_images/ --model-path ifcb_model.pt --output results.json
+uv run phytonet-predict ./test_images/ --model-path ifcb_model.pt --output results.json
 ```
 
 ## Development
@@ -62,7 +62,7 @@ uv run isort src/
 ## Project Structure
 
 ```
-src/python_phyto/
+src/phytonet/
 ├── __init__.py          # Package initialization
 ├── model.py             # Model definition and training utilities
 ├── transforms.py        # Image preprocessing transforms

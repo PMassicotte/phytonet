@@ -1,4 +1,4 @@
-"""Command line interface for python-phyto."""
+"""Command line interface for PhytoNet."""
 
 import argparse
 import json
@@ -133,5 +133,5 @@ if __name__ == "__main__":
     elif len(sys.argv) > 1 and sys.argv[1] == "predict":
         predict_cli()
     else:
-        print("Usage: python -m python_phyto.cli [train|predict] [args...]")
+        print("Usage: python -m phytonet.cli [train|predict] [args...]")
 
