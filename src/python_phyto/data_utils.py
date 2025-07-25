@@ -47,4 +47,3 @@ def split_dataset(
     print(
         f"\nDone! Data split into '{output_dir / 'train'}' and '{output_dir / 'val'}'"
     )
-
