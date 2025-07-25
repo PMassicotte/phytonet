@@ -1,8 +1,9 @@
 """Inference utilities for trained model."""
 
 from pathlib import Path
-from typing import List
+from typing import List, cast
 
+import torch
 from PIL import Image
 
 from .model import PhytoplanktonClassifier
@@ -25,7 +26,8 @@ def predict_image(
     # Load and preprocess image
     image = Image.open(image_path).convert("RGB")
     transform = get_val_transform(image_size)
-    input_tensor = transform(image).unsqueeze(0)
+    tensor = cast(torch.Tensor, transform(image))
+    input_tensor = tensor.unsqueeze(0)
 
     # Predict
     pred_idx = classifier.predict(input_tensor)
@@ -48,10 +50,10 @@ def batch_predict(
     classifier.load_model(model_path)
 
     # Get all image files
-    image_dir = Path(image_dir)
+    image_dir_path = Path(image_dir)
     image_extensions = {".png", ".jpg", ".jpeg", ".bmp", ".tiff"}
     image_files = [
-        f for f in image_dir.iterdir() if f.suffix.lower() in image_extensions
+        f for f in image_dir_path.iterdir() if f.suffix.lower() in image_extensions
     ]
 
     results = []
@@ -60,7 +62,8 @@ def batch_predict(
     for image_path in image_files:
         # Load and preprocess image
         image = Image.open(image_path).convert("RGB")
-        input_tensor = transform(image).unsqueeze(0)
+        tensor = cast(torch.Tensor, transform(image))
+        input_tensor = tensor.unsqueeze(0)
 
         # Predict
         pred_idx = classifier.predict(input_tensor)
@@ -69,4 +72,3 @@ def batch_predict(
         results.append((str(image_path), predicted_class))
 
     return results
-
