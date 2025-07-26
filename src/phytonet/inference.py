@@ -3,7 +3,6 @@
 from pathlib import Path
 from typing import List, cast
 
-import pandas as pd
 import torch
 from PIL import Image
 
@@ -98,10 +97,5 @@ def batch_predict(
         predicted_class = class_names[pred_idx]
 
         results.append((str(image_path), predicted_class, pred_prob))
-
-    # Save results to Parquet and CSV
-    df = pd.DataFrame(results, columns=["image_path", "predicted_class", "probability"])  # type: ignore[arg-type]
-    df.to_parquet(output_file, index=False)
-    df.to_csv(output_file.replace(".parquet", ".csv"), index=False)
 
     return results

@@ -7,8 +7,6 @@ from pathlib import Path
 
 import pandas as pd
 
-import pandas as pd
-
 from .inference import batch_predict, predict_image
 from .train import train_model
 
