@@ -54,7 +54,6 @@ def batch_predict(
     model_path: str,
     class_names: List[str] | None = None,
     num_classes: int | None = None,
-    output_file: str = "predictions.parquet",
     image_size: int = 224,
 ) -> List[tuple]:
     """Predict classes for all images in a directory and save to Parquet."""

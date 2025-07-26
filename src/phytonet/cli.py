@@ -100,7 +100,6 @@ def predict_cli():
             args.model_path,
             class_names,
             args.num_classes,
-            "predictions.parquet",
             args.image_size,
         )
 
