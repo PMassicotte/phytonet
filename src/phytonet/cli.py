@@ -2,7 +2,12 @@
 
 import argparse
 import json
+import os
 from pathlib import Path
+
+import pandas as pd
+
+import pandas as pd
 
 from .inference import batch_predict, predict_image
 from .train import train_model
@@ -62,7 +67,7 @@ def predict_cli():
     parser.add_argument("--num-classes", type=int, default=40, help="Number of classes")
     parser.add_argument("--image-size", type=int, default=224, help="Input image size")
     parser.add_argument(
-        "--output", help="Output file for batch predictions (JSON format)"
+        "--output", help="Output file for batch predictions (CSV format)"
     )
 
     args = parser.parse_args()
@@ -101,13 +106,28 @@ def predict_cli():
             args.image_size,
         )
 
+        # Convert results to DataFrame for better display and optional saving
+        df = pd.DataFrame(results)
+        df.columns = ["image_path", "predicted_class", "probability"]
+
         if args.output:
-            # Save to JSON file
-            with open(args.output, "w") as f:
-                json.dump(results, f, indent=2)
-            print(f"Results saved to {args.output}")
+            # Validate output file extension
+            if not args.output.endswith(".csv"):
+                print("Error: Output file must have .csv extension")
+                return
+
+            print("Batch predictions completed. Here are the first few results:\n")
+            print(df.head(n=5).to_string(index=False))
+
+            if os.path.exists(args.output):
+                print(f"\nOutput file already exists: {args.output}. Overwriting...")
+            else:
+                print(f"\nSaving results to {args.output}...")
+                df.to_csv(args.output, index=False)
+
         else:
             # Print to console
+            print("Batch predictions completed:\n")
             for image_path, predicted_class, confidence in results:
                 print(f"{image_path}: {predicted_class} (confidence: {confidence:.3f})")
 
