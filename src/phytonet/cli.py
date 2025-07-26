@@ -103,15 +103,15 @@ def predict_cli():
             args.image_size,
         )
 
-        # Convert results to DataFrame for better display and optional saving
-        df = pd.DataFrame(results)
-        df.columns = ["image_path", "predicted_class", "probability"]
-
         if args.output:
             # Validate output file extension
             if not args.output.endswith(".csv"):
                 print("Error: Output file must have .csv extension")
                 return
+
+            # Convert results to DataFrame for better display and optional saving
+            df = pd.DataFrame(results)
+            df.columns = ["image_path", "predicted_class", "probability"]
 
             print("Batch predictions completed. Here are the first few results:\n")
             print(df.head(n=5).to_string(index=False))
