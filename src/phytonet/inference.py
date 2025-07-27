@@ -5,6 +5,7 @@ from typing import List, cast
 
 import torch
 from PIL import Image
+from tqdm import tqdm
 
 from .model import PhytoplanktonClassifier
 from .transforms import get_val_transform
@@ -85,7 +86,7 @@ def batch_predict(
     results = []
     transform = get_val_transform(image_size)
 
-    for image_path in image_files:
+    for image_path in tqdm(image_files, desc="Processing images"):
         # Load and preprocess image
         image = Image.open(image_path).convert("RGB")
         tensor = cast(torch.Tensor, transform(image))
