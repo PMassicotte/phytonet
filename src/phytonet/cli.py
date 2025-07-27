@@ -109,7 +109,7 @@ def predict_cli():
                 print("Error: Output file must have .csv extension")
                 return
 
-            # Convert results to DataFrame for better display and optional saving
+            # Convert results to DataFrame for saving
             df = pd.DataFrame(results)
             df.columns = ["image_path", "predicted_class", "probability"]
 
@@ -120,8 +120,8 @@ def predict_cli():
                 print(f"\nOutput file already exists: {args.output}. Overwriting...")
             else:
                 print(f"\nSaving results to {args.output}...")
-                df.to_csv(args.output, index=False)
 
+            df.to_csv(args.output, index=False)
         else:
             # Print to console
             print("Batch predictions completed:\n")
