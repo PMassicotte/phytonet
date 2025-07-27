@@ -113,7 +113,6 @@ class PhytoplanktonClassifier:
 
     def predict(self, input_tensor):
         """Make prediction on input tensor."""
-        self.model.eval()
         with torch.no_grad():
             output = self.model(input_tensor.to(self.device))
             probabilities = torch.softmax(output, dim=1)
