@@ -26,12 +26,18 @@ Train a model on your phytoplankton dataset:
 uv run phytonet-train --data-dir ./data/ --input-dir ./data/original/ --epochs 20
 ```
 
+The training process will:
+
+- Automatically split your dataset into train/validation sets
+- Calculate the number of classes from your input directory structure
+- Save the trained model with embedded class names and metadata
+
 ### Prediction
 
 Make predictions on new images:
 
 ```bash
-# Single image
+# Single image prediction
 uv run phytonet-predict image.png --model-path ifcb_model.pt
 
 # Batch prediction on directory
@@ -48,6 +54,8 @@ uv run phytonet-predict /media/work/others/mathieu_ardyna/ifcb/ifcb_classifier/r
 # Batch prediction on a directory with a specific model that now includes class names
 uv run phytonet-predict ~/Downloads --model-path data/best_model_20250725_173054_epoch12_acc0.95.pth
 ```
+
+**Note**: Class names and model metadata are now embedded directly in the model file. No separate JSON file is needed unless you want to override the embedded class names.
 
 ## Development
 
@@ -92,4 +100,3 @@ src/phytonet/
 - **Easy inference**: Single image and batch prediction support
 - **CLI tools**: Simple command-line interface for training and prediction
 - **Proper packaging**: Uses modern Python packaging with pyproject.toml
-

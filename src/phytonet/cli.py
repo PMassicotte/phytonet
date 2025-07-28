@@ -2,7 +2,10 @@
 
 import argparse
 import json
+import os
 from pathlib import Path
+
+import pandas as pd
 
 from .inference import batch_predict, predict_image
 from .train import train_model
@@ -37,22 +40,16 @@ def train_cli():
     args = parser.parse_args()
 
     # Train model
-    classifier, class_names = train_model(
+    _, class_names = train_model(
         data_dir=args.data_dir,
         input_dir=args.input_dir,
         batch_size=args.batch_size,
         num_epochs=args.epochs,
-        num_classes=args.num_classes,
         image_size=args.image_size,
         train_ratio=args.train_ratio,
-        model_save_path=args.model_path,
     )
 
-    # Save class names
-    class_names_path = Path(args.model_path).with_suffix(".json")
-    with open(class_names_path, "w") as f:
-        json.dump(class_names, f)
-    print(f"Class names saved to {class_names_path}")
+    print(f"Model saved to {args.model_path} with {len(class_names)} classes")
 
 
 def predict_cli():
@@ -67,39 +64,33 @@ def predict_cli():
     parser.add_argument("--num-classes", type=int, default=40, help="Number of classes")
     parser.add_argument("--image-size", type=int, default=224, help="Input image size")
     parser.add_argument(
-        "--output", help="Output file for batch predictions (JSON format)"
+        "--output", help="Output file for batch predictions (CSV format)"
     )
 
     args = parser.parse_args()
 
-    # Load class names
+    # Load class names if provided, otherwise they'll be loaded from model
+    class_names = None
     if args.classes_path:
-        classes_path = args.classes_path
-    else:
-        classes_path = Path(args.model_path).with_suffix(".json")
-
-    try:
-        with open(classes_path, "r") as f:
-            class_names = json.load(f)
-    except FileNotFoundError:
-        print(f"Class names file not found: {classes_path}")
-        print(
-            "Please provide --classes-path or ensure the .json file exists alongside the model"
-        )
-        return
+        try:
+            with open(args.classes_path, "r") as f:
+                class_names = json.load(f)
+        except FileNotFoundError:
+            print(f"Class names file not found: {args.classes_path}")
+            return
 
     input_path = Path(args.input)
 
     if input_path.is_file():
         # Single image prediction
-        predicted_class = predict_image(
+        predicted_class, confidence = predict_image(
             str(input_path),
             args.model_path,
             class_names,
             args.num_classes,
             args.image_size,
         )
-        print(f"Predicted class: {predicted_class}")
+        print(f"Predicted class: {predicted_class} (confidence: {confidence:.3f})")
 
     elif input_path.is_dir():
         # Batch prediction
@@ -112,14 +103,29 @@ def predict_cli():
         )
 
         if args.output:
-            # Save to JSON file
-            with open(args.output, "w") as f:
-                json.dump(results, f, indent=2)
-            print(f"Results saved to {args.output}")
+            # Validate output file extension
+            if not args.output.endswith(".csv"):
+                print("Error: Output file must have .csv extension")
+                return
+
+            # Convert results to DataFrame for saving
+            df = pd.DataFrame(results)
+            df.columns = ["image_path", "predicted_class", "probability"]
+
+            print("Batch predictions completed. Here are the first few results:\n")
+            print(df.head(n=5).to_string(index=False))
+
+            if os.path.exists(args.output):
+                print(f"\nOutput file already exists: {args.output}. Overwriting...")
+            else:
+                print(f"\nSaving results to {args.output}...")
+
+            df.to_csv(args.output, index=False)
         else:
             # Print to console
-            for image_path, predicted_class in results:
-                print(f"{image_path}: {predicted_class}")
+            print("Batch predictions completed:\n")
+            for image_path, predicted_class, confidence in results:
+                print(f"{image_path}: {predicted_class} (confidence: {confidence:.3f})")
 
     else:
         print(f"Input path does not exist: {input_path}")
@@ -134,4 +140,3 @@ if __name__ == "__main__":
         predict_cli()
     else:
         print("Usage: python -m phytonet.cli [train|predict] [args...]")
-
