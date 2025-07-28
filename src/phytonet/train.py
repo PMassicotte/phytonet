@@ -2,6 +2,7 @@
 
 import os
 from collections import Counter
+from datetime import datetime
 from pathlib import Path
 
 import torch
@@ -22,14 +23,13 @@ def train_model(
     image_size: int = 224,
     train_ratio: float = 0.8,
     random_seed: int = 42,
-    model_save_path: str = "ifcb_model.pt",
 ):
     """Train the phytoplankton classifier."""
 
     # Setup paths
     input_path = Path(input_dir)
     output_path = Path(data_dir)
-    
+
     # Determine number of classes dynamically
     num_classes = len([d for d in input_path.iterdir() if d.is_dir()])
 
@@ -46,6 +46,7 @@ def train_model(
     train_ds = datasets.ImageFolder(
         os.path.join(data_dir, "train"), transform=train_transform
     )
+
     val_ds = datasets.ImageFolder(
         os.path.join(data_dir, "val"), transform=val_transform
     )
@@ -53,6 +54,7 @@ def train_model(
     train_loader = DataLoader(
         train_ds, batch_size=batch_size, shuffle=True, num_workers=4
     )
+
     val_loader = DataLoader(val_ds, batch_size=batch_size, shuffle=False, num_workers=4)
 
     # Calculate class weights for imbalanced dataset
@@ -107,9 +109,14 @@ def train_model(
 
         # Save best model (using balanced accuracy as primary metric for imbalanced data)
         if val_balanced_acc > best_val_acc:
+            date_str = datetime.now().strftime("%Y%m%d_%H%M%S")
+            model_save_path = (
+                output_path / f"best_model_{date_str}_epoch{epoch}_acc{val_acc:.2f}.pth"
+            )
+
             best_val_acc = val_balanced_acc
             best_epoch = epoch + 1
-            classifier.save_model(model_save_path, train_ds.classes)
+            classifier.save_model(str(model_save_path), train_ds.classes)
             print(f"New best model saved! Val balanced acc: {val_balanced_acc:.4f}")
 
     print(

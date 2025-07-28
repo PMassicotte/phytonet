@@ -47,7 +47,6 @@ def train_cli():
         num_epochs=args.epochs,
         image_size=args.image_size,
         train_ratio=args.train_ratio,
-        model_save_path=args.model_path,
     )
 
     print(f"Model saved to {args.model_path} with {len(class_names)} classes")
