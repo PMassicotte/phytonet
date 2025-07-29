@@ -64,3 +64,4 @@ htmlcov/
 .mypy_cache/
 .dmypy.json
 dmypy.json
+img/classified_img
