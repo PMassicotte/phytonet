@@ -40,7 +40,7 @@ def train_cli():
     args = parser.parse_args()
 
     # Train model
-    _, class_names = train_model(
+    _, class_names, _ = train_model(
         data_dir=args.data_dir,
         input_dir=args.input_dir,
         batch_size=args.batch_size,

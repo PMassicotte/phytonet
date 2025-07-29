@@ -12,6 +12,7 @@ from tqdm import tqdm
 
 from .data_utils import split_dataset
 from .model import PhytoplanktonClassifier
+from .training_history import TrainingHistory
 from .transforms import get_train_transform, get_val_transform
 
 
@@ -73,6 +74,23 @@ def train_model(
         num_classes=num_classes, class_weights=class_weights
     )
 
+    # Create models directory with date
+    date_str = datetime.now().strftime("%Y%m%d-%H%M%S")
+    models_save_dir = output_path / f"models/{date_str}"
+    models_save_dir.mkdir(parents=True, exist_ok=True)
+
+    # Initialize training history tracker
+    history = TrainingHistory(save_dir=str(models_save_dir))
+    history.update_metadata(
+        model_name=classifier.model_name,
+        num_classes=num_classes,
+        batch_size=batch_size,
+        total_epochs=num_epochs,
+        image_size=image_size,
+        train_ratio=train_ratio,
+        random_seed=random_seed,
+    )
+
     # Track best validation accuracy
     best_val_acc = 0.0
     best_epoch = 0
@@ -95,6 +113,23 @@ def train_model(
         train_acc = train_correct / len(train_ds)
         val_acc = val_correct / len(val_ds)
 
+        # Get current learning rate
+        current_lr = classifier.optimizer.param_groups[0]["lr"]
+
+        # Add epoch metrics to history
+        history.add_epoch(
+            epoch=epoch + 1,
+            train_loss=train_loss / len(train_ds),
+            train_accuracy=train_acc,
+            train_macro_f1=train_macro_f1,
+            train_balanced_accuracy=train_balanced_acc,
+            val_loss=val_loss / len(val_ds),
+            val_accuracy=val_acc,
+            val_macro_f1=val_macro_f1,
+            val_balanced_accuracy=val_balanced_acc,
+            learning_rate=current_lr,
+        )
+
         # Step scheduler
         classifier.step_scheduler(val_loss / len(val_ds))
 
@@ -109,21 +144,34 @@ def train_model(
 
         # Save best model (using balanced accuracy as primary metric for imbalanced data)
         if val_balanced_acc > best_val_acc:
-            date_str = datetime.now().strftime("%Y%m%d_%H%M%S")
+            date_time_str = datetime.now().strftime("%Y%m%d_%H%M%S")
             model_save_path = (
-                output_path / f"best_model_{date_str}_epoch{epoch}_acc{val_acc:.2f}.pth"
+                models_save_dir
+                / f"best_model_{date_time_str}_epoch{epoch}_acc{val_balanced_acc:.2f}.pth"
             )
 
             best_val_acc = val_balanced_acc
             best_epoch = epoch + 1
             classifier.save_model(str(model_save_path), train_ds.classes)
+            history.set_best_model(epoch + 1, "val_balanced_accuracy", val_balanced_acc)
+
             print(f"New best model saved! Val balanced acc: {val_balanced_acc:.4f}")
 
     print(
         f"Training completed. Best model from epoch {best_epoch} with val balanced acc: {best_val_acc:.4f}"
     )
 
-    return classifier, train_ds.classes
+    # Save training history
+    history.save_csv()
+
+    # Generate and save plots
+    history.plot_metrics(show=False)
+    history.plot_learning_rate(show=False)
+
+    # Print training summary
+    history.print_summary()
+
+    return classifier, train_ds.classes, history
 
 
 if __name__ == "__main__":
