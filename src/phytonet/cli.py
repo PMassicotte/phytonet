@@ -108,6 +108,17 @@ def predict_cli():
                 print("Error: Output file must have .csv extension")
                 return
 
+            # Ensure the output directory exists
+            output_dir = Path(args.model_path).parent
+
+            # Should never happen, but just in case
+            if not output_dir.exists():
+                print(f"Creating output directory: {output_dir}")
+                output_dir.mkdir(parents=True, exist_ok=True)
+
+            filename = Path(args.output).name
+            outfile = output_dir / filename
+
             # Convert results to DataFrame for saving
             df = pd.DataFrame(results)
             df.columns = ["image_path", "predicted_class", "probability"]
@@ -115,12 +126,12 @@ def predict_cli():
             print("Batch predictions completed. Here are the first few results:\n")
             print(df.head(n=5).to_string(index=False))
 
-            if os.path.exists(args.output):
-                print(f"\nOutput file already exists: {args.output}. Overwriting...")
+            if os.path.exists(outfile):
+                print(f"\nOutput file already exists: {outfile}. Overwriting...")
             else:
-                print(f"\nSaving results to {args.output}...")
+                print(f"\nSaving results to {outfile}...")
 
-            df.to_csv(args.output, index=False)
+            df.to_csv(outfile, index=False)
         else:
             # Print to console
             print("Batch predictions completed:\n")
