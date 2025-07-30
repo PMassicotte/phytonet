@@ -82,7 +82,9 @@ def batch_predict(
     image_dir_path = Path(image_dir)
     image_extensions = {".png", ".jpg", ".jpeg", ".bmp", ".tiff"}
     image_files = [
-        f for f in image_dir_path.iterdir() if f.suffix.lower() in image_extensions
+        f
+        for f in image_dir_path.rglob("*")
+        if f.is_file() and f.suffix.lower() in image_extensions
     ]
 
     results = []
