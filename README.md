@@ -38,24 +38,14 @@ Make predictions on new images:
 
 ```bash
 # Single image prediction
-uv run phytonet-predict image.png --model-path ifcb_model.pt
+uv run phytonet-predict image.png --model-path ifcb_model.pth
 
 # Batch prediction on directory
-uv run phytonet-predict ./test_images/ --model-path ifcb_model.pt --output results.json
-
-# Override with custom class names file if needed
-uv run phytonet-predict image.png --model-path ifcb_model.pt --classes-path custom_classes.json
-
-# Example:
-uv run phytonet-predict ./data/original/alexandrium_catenella/D20220813T053409_IFCB145_00023.png --model-path ifcb_model.pt --classes-path classes.json
-
-uv run phytonet-predict /media/work/others/mathieu_ardyna/ifcb/ifcb_classifier/run-data/02_Greenedge_Cruise_2016/ --model-path ifcb_model.pt --classes-path classes.json
+uv run phytonet-predict ./test_images/ --model-path ifcb_model.pth --output predictions.csv
 
 # Batch prediction on a directory with a specific model that now includes class names
-uv run phytonet-predict ~/Downloads --model-path data/best_model_20250725_173054_epoch12_acc0.95.pth
+uv run phytonet-predict ~/Downloads --model-path data/best_model_20250725_173054_epoch12_acc0.95.pth --output predictions.csv
 ```
-
-**Note**: Class names and model metadata are now embedded directly in the model file. No separate JSON file is needed unless you want to override the embedded class names.
 
 ## Development
 
@@ -76,21 +66,6 @@ Format code:
 ```bash
 uv run black src/
 uv run isort src/
-```
-
-## Project Structure
-
-<!-- TODO: redo it -->
-
-```
-src/phytonet/
-├── __init__.py          # Package initialization
-├── model.py             # Model definition and training utilities
-├── transforms.py        # Image preprocessing transforms
-├── data_utils.py        # Dataset splitting utilities
-├── train.py             # Training script
-├── inference.py         # Inference utilities
-└── cli.py              # Command line interface
 ```
 
 ## Features
