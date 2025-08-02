@@ -28,7 +28,6 @@ def train_cli():
     parser.add_argument(
         "--epochs", type=int, default=10, help="Number of training epochs"
     )
-    parser.add_argument("--num-classes", type=int, default=40, help="Number of classes")
     parser.add_argument("--image-size", type=int, default=224, help="Input image size")
     parser.add_argument(
         "--model-path", default="ifcb_model.pt", help="Path to save trained model"
@@ -61,7 +60,6 @@ def predict_cli():
         "--classes-path",
         help="Path to class names JSON file (auto-detected if not provided)",
     )
-    parser.add_argument("--num-classes", type=int, default=40, help="Number of classes")
     parser.add_argument("--image-size", type=int, default=224, help="Input image size")
     parser.add_argument(
         "--output", help="Output file for batch predictions (CSV format)"
@@ -87,8 +85,7 @@ def predict_cli():
             str(input_path),
             args.model_path,
             class_names,
-            args.num_classes,
-            args.image_size,
+            image_size=args.image_size,
         )
         print(f"Predicted class: {predicted_class} (confidence: {confidence:.3f})")
 
@@ -98,8 +95,7 @@ def predict_cli():
             str(input_path),
             args.model_path,
             class_names,
-            args.num_classes,
-            args.image_size,
+            image_size=args.image_size,
         )
 
         if args.output:
