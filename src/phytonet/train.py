@@ -5,6 +5,7 @@ from collections import Counter
 from datetime import datetime
 from pathlib import Path
 
+import numpy as np
 import torch
 from torch.utils.data import DataLoader
 from torchvision import datasets
@@ -24,6 +25,10 @@ def train_model(
     image_size: int = 224,
     train_ratio: float = 0.8,
     random_seed: int = 42,
+    early_stopping_patience: int = 5,
+    loss_type: str = "weighted_focal",
+    use_mixup: bool = True,
+    dropout_rate: float = 0.3,
 ):
     """Train the phytoplankton classifier."""
 
@@ -58,11 +63,11 @@ def train_model(
 
     val_loader = DataLoader(val_ds, batch_size=batch_size, shuffle=False, num_workers=4)
 
-    # Calculate class weights for imbalanced dataset
+    # Calculate class weights for imbalanced dataset with sqrt smoothing
     class_counts = Counter(train_ds.targets)
     total_samples = len(train_ds)
     class_weights = torch.tensor(
-        [total_samples / (num_classes * class_counts[i]) for i in range(num_classes)],
+        [np.sqrt(total_samples / (num_classes * class_counts[i])) for i in range(num_classes)],
         dtype=torch.float32,
     )
 
@@ -71,7 +76,11 @@ def train_model(
 
     # Initialize model with class weights
     classifier = PhytoplanktonClassifier(
-        num_classes=num_classes, class_weights=class_weights
+        num_classes=num_classes, 
+        class_weights=class_weights,
+        loss_type=loss_type,
+        use_mixup=use_mixup,
+        dropout_rate=dropout_rate
     )
 
     # Create models directory with date
@@ -91,9 +100,10 @@ def train_model(
         random_seed=random_seed,
     )
 
-    # Track best validation accuracy
+    # Track best validation accuracy and early stopping
     best_val_acc = 0.0
     best_epoch = 0
+    epochs_without_improvement = 0
 
     # Training loop
     for epoch in range(num_epochs):
@@ -152,10 +162,16 @@ def train_model(
 
             best_val_acc = val_balanced_acc
             best_epoch = epoch + 1
+            epochs_without_improvement = 0
             classifier.save_model(str(model_save_path), train_ds.classes)
             history.set_best_model(epoch + 1, "val_balanced_accuracy", val_balanced_acc)
 
             print(f"New best model saved! Val balanced acc: {val_balanced_acc:.4f}")
+        else:
+            epochs_without_improvement += 1
+            if epochs_without_improvement >= early_stopping_patience:
+                print(f"Early stopping triggered after {epoch + 1} epochs (no improvement for {early_stopping_patience} epochs)")
+                break
 
     print(
         f"Training completed. Best model from epoch {best_epoch} with val balanced acc: {best_val_acc:.4f}"
