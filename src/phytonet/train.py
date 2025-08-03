@@ -67,7 +67,10 @@ def train_model(
     class_counts = Counter(train_ds.targets)
     total_samples = len(train_ds)
     class_weights = torch.tensor(
-        [np.sqrt(total_samples / (num_classes * class_counts[i])) for i in range(num_classes)],
+        [
+            np.sqrt(total_samples / (num_classes * class_counts[i]))
+            for i in range(num_classes)
+        ],
         dtype=torch.float32,
     )
 
@@ -76,11 +79,11 @@ def train_model(
 
     # Initialize model with class weights
     classifier = PhytoplanktonClassifier(
-        num_classes=num_classes, 
+        num_classes=num_classes,
         class_weights=class_weights,
         loss_type=loss_type,
         use_mixup=use_mixup,
-        dropout_rate=dropout_rate
+        dropout_rate=dropout_rate,
     )
 
     # Create models directory with date
@@ -170,7 +173,9 @@ def train_model(
         else:
             epochs_without_improvement += 1
             if epochs_without_improvement >= early_stopping_patience:
-                print(f"Early stopping triggered after {epoch + 1} epochs (no improvement for {early_stopping_patience} epochs)")
+                print(
+                    f"Early stopping triggered after {epoch + 1} epochs (no improvement for {early_stopping_patience} epochs)"
+                )
                 break
 
     print(

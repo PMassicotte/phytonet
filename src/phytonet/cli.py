@@ -37,26 +37,34 @@ def train_cli():
         "--train-ratio", type=float, default=0.8, help="Ratio of data for training"
     )
     parser.add_argument(
-        "--loss-type", 
-        choices=["cross_entropy", "focal", "weighted_focal"], 
-        default="weighted_focal", 
-        help="Loss function type (weighted_focal recommended for imbalanced data)"
+        "--loss-type",
+        choices=["cross_entropy", "focal", "weighted_focal"],
+        default="weighted_focal",
+        help="Loss function type (weighted_focal recommended for imbalanced data)",
     )
     parser.add_argument(
-        "--use-mixup", action="store_true", default=True,
-        help="Enable MixUp/CutMix data augmentation (recommended)"
+        "--use-mixup",
+        action="store_true",
+        default=True,
+        help="Enable MixUp/CutMix data augmentation (recommended)",
     )
     parser.add_argument(
-        "--no-mixup", dest="use_mixup", action="store_false",
-        help="Disable MixUp/CutMix data augmentation"
+        "--no-mixup",
+        dest="use_mixup",
+        action="store_false",
+        help="Disable MixUp/CutMix data augmentation",
     )
     parser.add_argument(
-        "--dropout-rate", type=float, default=0.3,
-        help="Dropout rate for regularization (default: 0.3)"
+        "--dropout-rate",
+        type=float,
+        default=0.3,
+        help="Dropout rate for regularization (default: 0.3)",
     )
     parser.add_argument(
-        "--early-stopping-patience", type=int, default=5,
-        help="Early stopping patience in epochs (default: 5)"
+        "--early-stopping-patience",
+        type=int,
+        default=5,
+        help="Early stopping patience in epochs (default: 5)",
     )
 
     args = parser.parse_args()
