@@ -47,19 +47,27 @@ Optional Overrides:
 
 # Disable MixUp if you want faster training
 
+```bash
 uv run phytonet-train --epochs 20 --no-mixup
+```
 
 # Use different loss function
 
+```bash
 uv run phytonet-train --epochs 20 --loss-type focal
+```
 
 # Adjust dropout
 
+```bash
 uv run phytonet-train --epochs 20 --dropout-rate 0.5
+```
 
 # More patient early stopping
 
+```bash
 uv run phytonet-train --epochs 20 --early-stopping-patience 8
+```
 
 ### Prediction
 
