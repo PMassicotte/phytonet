@@ -1,4 +1,4 @@
-# PhytoNet
+# PhytoNet <img src="logo.png" align="right" height="138" alt="PhytoNet logo" /></a>
 
 A Python package for phytoplankton classification using deep learning.
 
