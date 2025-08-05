@@ -35,6 +35,36 @@ def train_cli():
     parser.add_argument(
         "--train-ratio", type=float, default=0.8, help="Ratio of data for training"
     )
+    parser.add_argument(
+        "--loss-type",
+        choices=["cross_entropy", "focal", "weighted_focal"],
+        default="weighted_focal",
+        help="Loss function type (weighted_focal recommended for imbalanced data)",
+    )
+    parser.add_argument(
+        "--use-mixup",
+        action="store_true",
+        default=True,
+        help="Enable MixUp/CutMix data augmentation (recommended)",
+    )
+    parser.add_argument(
+        "--no-mixup",
+        dest="use_mixup",
+        action="store_false",
+        help="Disable MixUp/CutMix data augmentation",
+    )
+    parser.add_argument(
+        "--dropout-rate",
+        type=float,
+        default=0.3,
+        help="Dropout rate for regularization (default: 0.3)",
+    )
+    parser.add_argument(
+        "--early-stopping-patience",
+        type=int,
+        default=5,
+        help="Early stopping patience in epochs (default: 5)",
+    )
 
     args = parser.parse_args()
 
@@ -46,6 +76,10 @@ def train_cli():
         num_epochs=args.epochs,
         image_size=args.image_size,
         train_ratio=args.train_ratio,
+        loss_type=args.loss_type,
+        use_mixup=args.use_mixup,
+        dropout_rate=args.dropout_rate,
+        early_stopping_patience=args.early_stopping_patience,
     )
 
     print(f"Model saved to {args.model_path} with {len(class_names)} classes")
