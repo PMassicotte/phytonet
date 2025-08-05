@@ -9,7 +9,7 @@ PhytoNet is a tool that uses deep learning to identify different types of phytop
 - **Handles large datasets** - process thousands of images in minutes
 - **Works with imbalanced data** - handles datasets where some species are much rarer than others
 
-## Quick Start
+## Quick start
 
 ### 1. Installation
 
@@ -27,11 +27,11 @@ uv run phytonet-train --data-dir ./data/ --input-dir ./data/original/ --epochs 2
 
 **What this does:**
 
-- Automatically organizes your images into training and validation sets
+- Automatically organizes your images into training and validation sets (80% train, 20% val)
 - Learns to distinguish between different species in your dataset
 - Saves a trained model that remembers what it learned
 
-### 3. Make Predictions
+### 3. Make predictions
 
 Use your trained model to identify new organisms:
 
@@ -45,13 +45,7 @@ uv run phytonet-predict ./new_images/ --model-path your_model.pth --output resul
 
 The `--output` option saves the predictions to a CSV file with species names and confidence scores in the same directory as the model.
 
-**What this does:**
-
-- Analyzes your images and predicts the most likely species
-- Provides confidence scores for each prediction
-- Saves results to a csv file
-
-## Advanced Training Options
+## Advanced training options
 
 PhytoNet automatically uses state-of-the-art techniques, but you can customize the training:
 
@@ -74,7 +68,7 @@ uv run phytonet-train --epochs 20 --early-stopping-patience 8
 - **CLI tools**: Simple command-line interface for training and prediction
 - **Proper packaging**: Uses modern Python packaging with `pyproject.toml`
 
-## Data Organization
+## Data organization
 
 ### Training data structure
 
