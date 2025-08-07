@@ -65,3 +65,4 @@ htmlcov/
 .dmypy.json
 dmypy.json
 img/classified_img
+.claude/
