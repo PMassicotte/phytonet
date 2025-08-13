@@ -31,6 +31,7 @@ data/**/*.png
 data/**/*.jpg
 data/**/*.jpeg
 data/**/*.zip
+data/**/*.csv
 !data/**/.gitkeep
 
 # IDEs
