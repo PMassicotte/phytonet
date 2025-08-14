@@ -1,5 +1,7 @@
 # PhytoNet <img src="logo.png" align="right" height="138" alt="PhytoNet logo" /></a>
 
+[![DOI](https://zenodo.org/badge/1026249199.svg)](https://doi.org/10.5281/zenodo.16875166)
+
 `PhytoNet` is a tool that uses deep learning to identify different types of phytoplankton (microscopic marine plants) from images.
 
 ## What does `PhytoNet` do?
