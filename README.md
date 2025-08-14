@@ -1,8 +1,8 @@
 # PhytoNet <img src="logo.png" align="right" height="138" alt="PhytoNet logo" /></a>
 
-PhytoNet is a tool that uses deep learning to identify different types of phytoplankton (microscopic marine plants) from images.
+`PhytoNet` is a tool that uses deep learning to identify different types of phytoplankton (microscopic marine plants) from images.
 
-## What does PhytoNet do?
+## What does `PhytoNet` do?
 
 - **Identifies phytoplankton species** from microscopic images automatically
 - **Learns from your data** - train custom models on your specific organism types
@@ -17,9 +17,18 @@ PhytoNet is a tool that uses deep learning to identify different types of phytop
 uv sync
 ```
 
+### Getting help
+
+There are two main commands you will use to train and predict with `PhytoNet`. To see the available options for each command, run:
+
+```bash
+uv run phytonet-train --help
+uv run phytonet-predict --help
+```
+
 ### 2. Train a Model
 
-Train PhytoNet to recognize your phytoplankton species:
+Train `PhytoNet` to recognize your phytoplankton species:
 
 ```bash
 uv run phytonet-train --data-dir ./data/ --input-dir ./data/original/ --epochs 20
@@ -47,7 +56,7 @@ The `--output` option saves the predictions to a CSV file with species names and
 
 ## Advanced training options
 
-PhytoNet automatically uses state-of-the-art techniques, but you can customize the training:
+`PhytoNet` automatically uses state-of-the-art techniques, but you can customize the training:
 
 ```bash
 # Faster training (disable data mixing)
@@ -89,9 +98,9 @@ data/original/
     └── skel_003.png
 ```
 
-### What PhytoNet creates
+### What `PhytoNet` creates
 
-After training, PhytoNet automatically organizes your data:
+After training, `PhytoNet` automatically organizes your data:
 
 ```
 data/
@@ -116,14 +125,14 @@ data/
 
 **Key features:**
 
-- **Any folder structure**: PhytoNet recursively scans all subdirectories
+- **Any folder structure**: `PhytoNet` recursively scans all subdirectories
 - **Mixed formats**: Supports `.png`, `.jpg`, `.jpeg`, `.bmp`, `.tiff` in same directory
 - **Flexible naming**: No specific file naming requirements
 - **Batch processing**: Processes thousands of images efficiently
 
 ### Important guidelines
 
-- **Folder names = Species labels**: Use clear, consistent species names as PhytoNet uses folder names as class labels
+- **Folder names = Species labels**: Use clear, consistent species names as `PhytoNet` uses folder names as class labels
 - **Supported formats**: `.jpg`, `.jpeg`, `.png`, `.tiff`, `.bmp`
 - **Minimum images**: At least 10-20 images per species for effective training
 - **Image quality**: Use high-resolution images (>224x224 pixels recommended)
