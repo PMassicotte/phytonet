@@ -40,6 +40,12 @@ uv run phytonet-train --data-dir ./data/ --input-dir ./data/original/ --epochs 2
 - Learns to distinguish between different species in your dataset
 - Saves a trained model that remembers what it learned
 
+After training, you will find your model saved in the `data/models/` directory with a timestamped folder name like `YYYYMMDD-HHMMSS/`. Inside, you'll find:
+
+- `best_model_*.pth`: The best model weights
+- `training_history_*.csv`: Training metrics like accuracy and loss
+- `learning_rate_*.png`: Learning rate schedule plot
+
 ### 3. Make predictions
 
 Use your trained model to identify new organisms:
@@ -53,6 +59,27 @@ uv run phytonet-predict ./new_images/ --model-path your_model.pth --output resul
 ```
 
 The `--output` option saves the predictions to a CSV file with species names and confidence scores in the same directory as the model.
+
+After running the prediction command, you will see output like this in the model directory (depending on the --output option). For example, if you transforms
+
+```bash
+uv run phytonet-predict ./new_images/ --model-path 20250729-120937/best_model_20250729_141727_epoch14_acc0.96.pth --output results.csv
+```
+
+This will create a `results.csv` file inside the `20250729-120937/` directory with content like:
+
+```
+image_path,predicted_class,probability
+new_images/chaet_001.jpg,Chaetoceros,0.98
+new_images/diat_002.png,Diatoma,0.95
+new_images/skel_003.jpg,Skeletonema,0.99
+```
+
+**CSV format details:**
+
+- `image_path`: Relative path to the input image
+- `predicted_class`: Phytoplankton species classification (one of the trained species found in `best_model_20250729_141727_epoch14_acc0.96.pth`)
+- `probability`: Confidence score (0.0 to 1.0)
 
 ## Advanced training options
 
