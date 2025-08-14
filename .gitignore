@@ -67,4 +67,4 @@ htmlcov/
 dmypy.json
 img/classified_img
 .claude/
-./run_predictions.sh
+run_predictions.sh
