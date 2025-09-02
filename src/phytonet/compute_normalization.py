@@ -1,6 +1,5 @@
 """Compute dataset-specific normalization values for grayscale phytoplankton images."""
 
-import os
 from pathlib import Path
 
 import torch
@@ -94,8 +93,8 @@ if __name__ == "__main__":
 
     mean, std = compute_normalization_stats(args.data_dir, args.image_size)
 
-    print(f"\nDataset normalization statistics:")
+    print("\nDataset normalization statistics:")
     print(f"Mean: {mean}")
     print(f"Std: {std}")
-    print(f"\nTo use in transforms:")
+    print("\nTo use in transforms:")
     print(f"transforms.Normalize({mean}, {std})")
